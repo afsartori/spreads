@@ -484,3 +484,42 @@ class CanonA2200CameraDevice(CHDKCameraDevice):
         except KeyError:
             raise Exception("The desired ISO value is not supported.")
         self._device.execute_lua("set_sv96({0})".format(sv96_value))
+
+class CanonA810CameraDevice(CHDKCameraDevice):
+    """ Canon A810 driver.
+    """
+
+    def __init__(self, config, device):
+        super(CanonA810CameraDevice, self).__init__(config, device)
+        if self.orientation is not None:
+            self.logger = logging.getLogger(
+                'CanonA810CameraDevice[{0}]'.format(self.orientation))
+        else:
+            self.logger = logging.getLogger('CanonA810CameraDevice')
+
+    @classmethod
+    def match(cls, device):
+        # You have to change those two values to whatever they are on your device
+        matches = (hex(device.idVendor) == "0x4a9"
+                   and hex(device.idProduct) == "0x323f")
+        return matches
+
+    def prepare_capture(self):
+        self._set_record_mode()
+        time.sleep(1.25)
+        self._set_zoom(self._zoom_level)
+        self._disable_flash()
+        self._disable_ndfilter()
+        self._set_sensitivity(self._sensitivity)
+        self._set_shutter_speed(self._shutter_speed)
+        self._lock_focus()
+        time.sleep(3)
+
+    def _set_sensitivity(self, value=100):
+        """ Set the camera's ISO value.
+
+        :param iso_value: The ISO value in ISO/ASA format
+        :type iso-value:  int
+
+        """
+        self._device.execute_lua("set_iso_real({0})".format(value))

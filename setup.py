@@ -28,6 +28,7 @@ setup(
         'spreadsplug.devices': [
             'chdkcamera = spreadsplug.dev.chdkcamera:CHDKCameraDevice',
             'a2200      = spreadsplug.dev.chdkcamera:CanonA2200CameraDevice',
+            'a810       = spreadsplug.dev.chdkcamera:CanonA810CameraDevice',
         ],
         'spreadsplug.hooks': [
             'combine    = spreadsplug.combine:CombinePlugin',
