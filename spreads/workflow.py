@@ -64,6 +64,9 @@ def capture(devices):
         logger.debug("Sending capture command to devices")
         for dev in devices:
             futures.append(executor.submit(dev.capture))
+            # NOTE: Wait before triggering the next camera, as triggering      
+            #       at the same time seems to be problematic...  
+            time.sleep(0.25)
     if any(x.exception() for x in futures):
         exc = next(x for x in futures if x.exception()).exception()
         raise exc
